@@ -1,26 +1,30 @@
 blueprint:
   name: Daily Utility Cost Notification
-  description: "`- Version: 0.1 -`\n\n Send a notification to devices S24 and iPhone every day at 23:55 with the usage cost of selected entities with custom names."
+  description: "`- Version: 0.2 -`\n\n Send a notification to devices S24 and iPhone every day at 23:55 with the usage cost of selected entities with custom names."
   domain: automation
   input:
-    sensor_mappings:
-      name: Electricity Sensor Mappings
-      description: Map each sensor to a custom name.
+    sensors:
+      name: Electricity Sensors
+      description: Select the sensors that track electricity usage for air conditioning.
+      selector:
+        entity:
+          domain: sensor
+          multiple: true
+    custom_names:
+      name: Custom Names
+      description: Provide custom names for the selected sensors.
       selector:
         object:
-          mode: dictionary
-          key:
-            name: Sensor
-            selector:
-              entity:
-                domain: sensor
-          value:
-            name: Custom Name
-            selector:
-              text
+          mode: list
+          elements:
+            - selector:
+                text
     notify_devices:
       name: Notify Devices
-      description: Devices to send the notification to
+      description: Devices to send the notification to.
+      default: 
+        - "mobile_app_s24"
+        - "mobile_app_iphone"
       selector:
         entity:
           domain: notify
@@ -35,12 +39,12 @@ action:
     data:
       message: >
         {% set total_usage = 0 %}
-        {% for entity_id, custom_name in sensor_mappings.items() %}
-          {% set total_usage = total_usage + states(entity_id)|float %}
+        {% for i in range(sensors | length) %}
+          {% set total_usage = total_usage + states(sensors[i]) | float %}
         {% endfor %}
-        Daily Electricity Usage:
-        {% for entity_id, custom_name in sensor_mappings.items() %}
-          - {{ custom_name }}: €{{ states(entity_id) }}
+        🌞 Daily Electricity Usage 🌞:
+        {% for i in range(sensors | length) %}
+          - {{ custom_names[i] }}: €{{ states(sensors[i]) }}
         {% endfor %}
         Total: €{{ total_usage }}
 
