@@ -1,0 +1,47 @@
+blueprint:
+  name: Daily Utility Cost Notification
+  description: "`- Version: 0.1 -`\n\n Send a notification to devices S24 and iPhone every day at 23:55 with the usage cost of selected entities with custom names."
+  domain: automation
+  input:
+    sensor_mappings:
+      name: Electricity Sensor Mappings
+      description: Map each sensor to a custom name.
+      selector:
+        object:
+          mode: dictionary
+          key:
+            name: Sensor
+            selector:
+              entity:
+                domain: sensor
+          value:
+            name: Custom Name
+            selector:
+              text
+    notify_devices:
+      name: Notify Devices
+      description: Devices to send the notification to
+      selector:
+        entity:
+          domain: notify
+          multiple: true
+
+trigger:
+  - platform: time
+    at: "23:55:00"
+
+action:
+  - service: notify.mobile_app_s24
+    data:
+      message: >
+        {% set total_usage = 0 %}
+        {% for entity_id, custom_name in sensor_mappings.items() %}
+          {% set total_usage = total_usage + states(entity_id)|float %}
+        {% endfor %}
+        Daily Electricity Usage:
+        {% for entity_id, custom_name in sensor_mappings.items() %}
+          - {{ custom_name }}: €{{ states(entity_id) }}
+        {% endfor %}
+        Total: €{{ total_usage }}
+
+mode: single
