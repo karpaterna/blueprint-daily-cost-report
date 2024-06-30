@@ -1,6 +1,6 @@
 blueprint:
   name: Daily Utility Cost Notification
-  description: "`- Version: 0.91 -`\n\n Send a notification to device every day with the usage cost of selected entities."
+  description: "`- Version: 0.92 -`\n\n Send a notification to device every day with the usage cost of selected entities."
   domain: automation
   input:
     sensors:
@@ -26,8 +26,27 @@ blueprint:
 trigger:
 - platform: time
   at: !input trigger_time
-
+variables:
+  notify_device: !input notify_device
 action:
+  - domain: mobile_app
+    type: notify
+    device_id: !input notify_device
+    title: "Spotreba"
+    message: >
+      {% set total_usage = 0 %}
+      {% for sensor in sensors %}
+        {% set total_usage = total_usage + states(sensor) | float %}
+      {% endfor %}
+      🌞 Daily Electricity Usage 🌞:
+      {% for sensor in sensors %}
+        {% set friendly_name = state_attr(sensor, 'friendly_name') %}
+        {% set friendly_name = friendly_name | regex_replace('[0-9]', '') %}
+        {% set friendly_name = friendly_name | regex_replace('Plug', '') %}
+        {% set friendly_name = friendly_name | regex_replace('daily', '') %}
+        - {{ friendly_name | trim }}: €{{ states(sensor) }}
+      {% endfor %}
+      Total: €{{ total_usage }}
   - service: notify.notify
     data:
       target: !input notify_device
