@@ -1,6 +1,6 @@
 blueprint:
   name: Daily Utility Cost Notification
-  description: "`- Version: 0.92 -`\n\n Send a notification to device every day with the usage cost of selected entities."
+  description: "`- Version: 0.93 -`\n\n Send a notification to device every day with the usage cost of selected entities."
   domain: automation
   input:
     sensors:
@@ -34,6 +34,7 @@ action:
     device_id: !input notify_device
     title: "Spotreba"
     message: >
+      {{ sensors }}
       {% set total_usage = 0 %}
       {% for sensor in sensors %}
         {% set total_usage = total_usage + states(sensor) | float %}
