@@ -1,6 +1,6 @@
 blueprint:
   name: Daily Utility Cost Notification
-  description: "`- Version: 0.95 -`\n\n Send a notification to device every day with the usage cost of selected entities."
+  description: "`- Version: 0.96 -`\n\n Send a notification to device every day with the usage cost of selected entities."
   domain: automation
   input:
     sensors:
