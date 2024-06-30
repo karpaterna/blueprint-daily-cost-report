@@ -1,6 +1,6 @@
 blueprint:
   name: Daily Utility Cost Notification
-  description: "`- Version: 0.6 -`\n\n Send a notification to device every day with the usage cost of selected entities."
+  description: "`- Version: 0.7 -`\n\n Send a notification to device every day with the usage cost of selected entities."
   domain: automation
   input:
     sensors:
@@ -17,10 +17,15 @@ blueprint:
       selector:
         device: 
           integration: mobile_app
-
+    trigger_time:
+      name: Trigger Time
+      description: Time to send the daily notification.
+      default: "23:55:00"
+      selector:
+        time
 trigger:
   - platform: time
-    at: "23:55:00"
+    at:  !input trigger_time
 
 action:
   - service: notify.send_message
