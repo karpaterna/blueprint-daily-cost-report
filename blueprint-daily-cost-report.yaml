@@ -1,6 +1,6 @@
 blueprint:
   name: Daily Utility Cost Notification
-  description: "`- Version: 0.98.1 -`\n\n Send a notification to device every day with the usage cost of selected entities."
+  description: "`- Version: 0.99 -`\n\n Send a notification to device every day with the usage cost of selected entities."
   domain: automation
   input:
     sensors:
@@ -23,16 +23,9 @@ blueprint:
       default: "23:55:00"
       selector:
         time:
-    name_filters:
-      name: Name Filters
-      description: Comma-separated list of regex patterns to remove from sensor names.
-      default: "Plug,daily,[0-9],€,Daily"
-      selector:
-        text:
 variables:
   notify_device: !input notify_device
   sensors: !input sensors
-  name_filters: !input name_filters
 trigger:
 - platform: time
   at: !input trigger_time
@@ -42,7 +35,6 @@ action:
     device_id: !input notify_device
     title: "Spotreba"
     message: >
-      {%- set filters = name_filters.split(',') -%}
       {%- set total_usage = 0 -%}
       ⚡Daily Electricity Usage🔌:
       {%- for sensor in sensors -%}
@@ -50,9 +42,11 @@ action:
         {%- if sensor_value > 0.1 -%}
           {%- set total_usage = total_usage + states(sensor) | float -%}
           {%- set friendly_name = state_attr(sensor, 'friendly_name') -%}
-          {% for filter in filters %}
-              {% set friendly_name = friendly_name | regex_replace(filter, '') %}
-            {% endfor %}
+          {%- set friendly_name = friendly_name | regex_replace('[0-9]', '') -%}
+          {%- set friendly_name = friendly_name | regex_replace('Plug', '') -%}
+          {%- set friendly_name = friendly_name | regex_replace('€', '') -%}
+          {%- set friendly_name = friendly_name | regex_replace('daily', '') -%}
+          {%- set friendly_name = friendly_name | regex_replace('Daily', '') -%}
           - {{ friendly_name | trim }}: {{ states(sensor) | round(2) }}€ 
         {%- endif -%}    
       {%- endfor -%}
