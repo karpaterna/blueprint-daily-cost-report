@@ -1,6 +1,6 @@
 blueprint:
   name: Daily Utility Cost Notification
-  description: "`- Version: 0.96 -`\n\n Send a notification to device every day with the usage cost of selected entities."
+  description: "`- Version: 0.97 -`\n\n Send a notification to device every day with the usage cost of selected entities."
   domain: automation
   input:
     sensors:
@@ -47,6 +47,7 @@ action:
           {%- set friendly_name = friendly_name | regex_replace('€', '') -%}
           {%- set friendly_name = friendly_name | regex_replace('daily', '') -%}
           - {{ friendly_name | trim }}: {{ states(sensor) | round(2) }}€
+        {%- endif -%}    
       {%- endfor -%}
 
 mode: single
