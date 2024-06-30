@@ -35,17 +35,16 @@ action:
     device_id: !input notify_device
     title: "Spotreba"
     message: >
-      {{ sensors }}
-      {% set total_usage = 0 %}
+      {%- set total_usage = 0 -%}
       ⚡Daily Electricity Usage🔌:
-      {% for sensor in sensors %}
-        {% set total_usage = total_usage + states(sensor) | float %}
-        {% set friendly_name = state_attr(sensor, 'friendly_name') %}
-        {% set friendly_name = friendly_name | regex_replace('[0-9]', '') %}
-        {% set friendly_name = friendly_name | regex_replace('Plug', '') %}
-        {% set friendly_name = friendly_name | regex_replace('€', '') %}
-        {% set friendly_name = friendly_name | regex_replace('daily', '') %}
+      {%- for sensor in sensors -%}
+        {%- set total_usage = total_usage + states(sensor) | float -%}
+        {%- set friendly_name = state_attr(sensor, 'friendly_name') -%}
+        {%- set friendly_name = friendly_name | regex_replace('[0-9]', '') -%}
+        {%- set friendly_name = friendly_name | regex_replace('Plug', '') -%}
+        {%- set friendly_name = friendly_name | regex_replace('€', '') -%}
+        {%- set friendly_name = friendly_name | regex_replace('daily', '') -%}
         - {{ friendly_name | trim }}: {{ states(sensor) }}€
-      {% endfor %}
+      {%- endfor -%}
 
 mode: single
