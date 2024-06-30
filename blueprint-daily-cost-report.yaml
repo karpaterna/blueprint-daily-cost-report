@@ -10,25 +10,6 @@ blueprint:
         entity:
           domain: sensor
           multiple: true
-    custom_names:
-      name: Custom Names
-      description: Provide custom names for the selected sensors.
-      selector:
-        object:
-          mode: list
-          elements:
-            - selector:
-                text
-    notify_devices:
-      name: Notify Devices
-      description: Devices to send the notification to.
-      default: 
-        - "mobile_app_s24"
-        - "mobile_app_iphone"
-      selector:
-        entity:
-          domain: notify
-          multiple: true
 
 trigger:
   - platform: time
