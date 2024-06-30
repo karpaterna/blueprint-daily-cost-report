@@ -1,6 +1,6 @@
 blueprint:
   name: Daily Utility Cost Notification
-  description: "`- Version: 0.7 -`\n\n Send a notification to device every day with the usage cost of selected entities."
+  description: "`- Version: 0.8 -`\n\n Send a notification to device every day with the usage cost of selected entities."
   domain: automation
   input:
     sensors:
@@ -24,8 +24,8 @@ blueprint:
       selector:
         time
 trigger:
-  - platform: time
-    at:  !input trigger_time
+- platform: time
+  at: !input trigger_time
 
 action:
   - service: notify.send_message
