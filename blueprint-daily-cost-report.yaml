@@ -44,7 +44,7 @@ action:
         {%- set friendly_name = friendly_name | regex_replace('Plug', '') -%}
         {%- set friendly_name = friendly_name | regex_replace('€', '') -%}
         {%- set friendly_name = friendly_name | regex_replace('daily', '') -%}
-        - {{ friendly_name | trim }}: {{ states(sensor) }}€
+        - {{ friendly_name | trim }}: {{ states(sensor) | round(2) }}€
       {%- endfor -%}
 
 mode: single
