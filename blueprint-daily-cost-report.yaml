@@ -1,6 +1,6 @@
 blueprint:
   name: Daily Utility Cost Notification
-  description: "`- Version: 0.98 -`\n\n Send a notification to device every day with the usage cost of selected entities."
+  description: "`- Version: 0.98.1 -`\n\n Send a notification to device every day with the usage cost of selected entities."
   domain: automation
   input:
     sensors:
@@ -28,7 +28,7 @@ blueprint:
       description: Comma-separated list of regex patterns to remove from sensor names.
       default: "Plug,daily,[0-9],€,Daily"
       selector:
-        text
+        text:
 variables:
   notify_device: !input notify_device
   sensors: !input sensors
