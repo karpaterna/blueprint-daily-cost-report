@@ -23,11 +23,12 @@ blueprint:
       default: "23:55:00"
       selector:
         time:
+variables:
+  notify_device: !input notify_device
+  sensors: !input sensors
 trigger:
 - platform: time
   at: !input trigger_time
-variables:
-  notify_device: !input notify_device
 action:
   - domain: mobile_app
     type: notify
@@ -36,17 +37,15 @@ action:
     message: >
       {{ sensors }}
       {% set total_usage = 0 %}
+      ⚡Daily Electricity Usage🔌:
       {% for sensor in sensors %}
         {% set total_usage = total_usage + states(sensor) | float %}
-      {% endfor %}
-      🌞 Daily Electricity Usage 🌞:
-      {% for sensor in sensors %}
         {% set friendly_name = state_attr(sensor, 'friendly_name') %}
         {% set friendly_name = friendly_name | regex_replace('[0-9]', '') %}
         {% set friendly_name = friendly_name | regex_replace('Plug', '') %}
+        {% set friendly_name = friendly_name | regex_replace('€', '') %}
         {% set friendly_name = friendly_name | regex_replace('daily', '') %}
-        - {{ friendly_name | trim }}: €{{ states(sensor) }}
+        - {{ friendly_name | trim }}: {{ states(sensor) }}€
       {% endfor %}
-      Total: €{{ total_usage }}
 
 mode: single
