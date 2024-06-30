@@ -17,16 +17,18 @@ blueprint:
       selector:
         device: 
           integration: mobile_app
+
 trigger:
   - platform: time
     at: "23:55:00"
 
 action:
-- domain: mobile_app
-   type: notify
-   device_id: !input notify_device
-   title: "Spotreba"
-   message: >
+  - service: notify
+    target:
+      entity_id: !input notify_device
+    data:
+      title: "Spotreba"
+      message: >
         {% set total_usage = 0 %}
         {% for sensor in sensors %}
           {% set total_usage = total_usage + states(sensor) | float %}
